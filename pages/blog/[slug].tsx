@@ -17,7 +17,7 @@ type Content = {
 };
 
 type ContentId = {
-  slug: string;
+  slug?: string | undefined;
 };
 
 const Id: React.FC<Content> = ({ blog }) => {
