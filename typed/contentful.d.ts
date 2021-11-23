@@ -35,7 +35,7 @@ export interface IPostFields {
   /** Category */
   category?: ICategory[] | undefined;
 
-  id?: string[];
+  slug?: string | undefined;
 }
 
 /** 記事 */

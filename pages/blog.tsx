@@ -1,19 +1,20 @@
 import { GetStaticProps } from "next";
-import { createClient } from "contentful";
 import Date from "../components/Sys/date";
 import Link from "next/link";
+import client from "../libs/contentful";
 
 type Map = {
   blog: {
-    map: NumberConstructor;
+    map: StringConstructor;
   };
 };
 
 type Content = {
   sys: {
-    id: string;
+    slug: string;
   };
   fields: {
+    slug: string;
     title: string;
     date: string;
   };
@@ -23,11 +24,11 @@ const Blog = ({ blog }: Map) => {
   return (
     <div>
       {blog.map((props: Content) => (
-        <dl key={props.sys.id}>
+        <dl key={props.sys.slug}>
           <dt>
             <Date dateString={props.fields.date} />
           </dt>
-          <Link href={`/blog/${props.sys.id}`}>
+          <Link href={`/blog/${props.sys.slug}`}>
             <a>{props.fields.title}</a>
           </Link>
         </dl>
@@ -37,11 +38,6 @@ const Blog = ({ blog }: Map) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const client = createClient({
-    space: process.env.CONTENTFUL_SPACE_ID,
-    accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
-  });
-
   const res = await client.getEntries({ content_type: "blog" });
   return {
     props: {
