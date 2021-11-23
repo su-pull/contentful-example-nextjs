@@ -1,10 +1,8 @@
-const contentful = require("contentful");
+import { createClient } from "contentful";
 
 const config = {
   space: process.env.CONTENTFUL_SPACE_ID,
-  accessToken: process.env.CONTENTFUL_ACCESS_KEY,
+  accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
 };
 
-export const createClient = () => {
-  return contentful.createClient(config);
-};
+export const client = createClient(config);

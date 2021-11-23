@@ -5,14 +5,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "contentful-typescript-codegen": "contentful-typescript-codegen --output @types/generated/contentful.d.ts"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.6.2",
     "@types/node": "^16.11.9",
     "@types/react": "^17.0.36",
     "contentful": "^9.1.4",
+    "contentful-management": "^7.45.2",
+    "contentful-typescript-codegen": "^3.2.3",
     "date-fns": "^2.26.0",
+    "dotenv": "^10.0.0",
     "next": "12.0.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",

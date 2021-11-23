@@ -3,25 +3,22 @@ import { createClient } from "contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Date from "../../components/Sys/date";
 import styles from "./midasi.module.scss";
+import { IPostFields } from "../../typed/contentful";
 
-type ContentId = {
-  id: string;
-};
-documentToReactComponents: string;
 type Content = {
+  body: string;
   blog: {
     fields: {
+      id: string;
       date: string;
       title: string;
     };
   };
 };
 
-// type Content = {
-//   fields: {
-//     id: string;
-//   };
-// };
+type ContentId = {
+  id: string | string[] | undefined;
+};
 
 const Id: React.FC<Content> = ({ blog }) => {
   return (
@@ -40,19 +37,17 @@ const Id: React.FC<Content> = ({ blog }) => {
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
-  accessToken: process.env.CONTENTFUL_ACCESS_KEY,
+  accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
 });
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await client.getEntries({
+  const res = await client.getEntries<ContentId>({
     content_type: "blog",
   });
 
-  const paths = res.items.map((item: any) => {
-    return {
-      params: { id: item.fields.id },
-    };
-  });
+  const paths = res.items.map((item) => ({
+    params: { id: item.fields.id },
+  }));
 
   return {
     paths,
@@ -60,14 +55,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  if (!params) {
+export const getStaticProps: GetStaticProps = async (context) => {
+  if (!context.params) {
     return {
       notFound: true,
     };
   }
 
-  const id = params.id;
+  const id = context.params.id;
 
   if (typeof id !== "string") {
     return {
@@ -77,7 +72,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { items } = await client.getEntries({
     content_type: "blog",
-    "fields.id": params.id,
+    "fields.id": context.params.id,
   });
 
   return {
