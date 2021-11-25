@@ -20,7 +20,7 @@ type Content = {
   };
 };
 
-const Blog = ({ blog }: Map) => {
+const Blog: React.FC<Map> = ({ blog }) => {
   return (
     <div>
       {blog.map((props: Content) => (
@@ -28,7 +28,7 @@ const Blog = ({ blog }: Map) => {
           <dt>
             <Date dateString={props.fields.date} />
           </dt>
-          <Link href={`/blog/${props.sys.slug}`}>
+          <Link href={`/blog/${props.fields.slug}`}>
             <a>{props.fields.title}</a>
           </Link>
         </dl>
@@ -38,7 +38,7 @@ const Blog = ({ blog }: Map) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await client.getEntries({ content_type: "blog" });
+  const res = await client.getEntries({ content_type: "blog", limit: 500 });
   return {
     props: {
       blog: res.items,
