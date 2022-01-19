@@ -1,7 +1,8 @@
 import { GetStaticProps } from "next";
 import Date from "../components/Sys/date";
 import Link from "next/link";
-import client from "../libs/contentful";
+import { buildClient, IPostFields } from "../libs/contentful";
+import { Entry, EntryCollection } from "contentful";
 
 type Map = {
   blog: {
@@ -9,22 +10,22 @@ type Map = {
   };
 };
 
-type Content = {
-  sys: {
-    slug: string;
-  };
-  fields: {
-    slug: string;
-    title: string;
-    date: string;
-  };
-};
+// type Content = {
+//   sys: {
+//     slug: string;
+//   };
+//   fields: {
+//     slug: string;
+//     title: string;
+//     date: string;
+//   };
+// };
 
 const Blog: React.FC<Map> = ({ blog }) => {
   return (
     <div>
-      {blog.map((props: Content) => (
-        <dl key={props.sys.slug}>
+      {blog.map((props: Entry<IPostFields>) => (
+        <dl key={props.sys.id}>
           <dt>
             <Date dateString={props.fields.date} />
           </dt>
@@ -37,11 +38,16 @@ const Blog: React.FC<Map> = ({ blog }) => {
   );
 };
 
+const client = buildClient();
+
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await client.getEntries({ content_type: "blog", limit: 500 });
+  const data: EntryCollection<IPostFields> = await client.getEntries({
+    content_type: "blog",
+    limit: 500,
+  });
   return {
     props: {
-      blog: res.items,
+      blog: data.items,
     },
   };
 };

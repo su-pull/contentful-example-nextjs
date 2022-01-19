@@ -2,7 +2,8 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Date from "../../components/Sys/date";
 import styles from "./midasi.module.scss";
-import client from "../../libs/contentful";
+import { buildClient, IPostFields } from "../../libs/contentful";
+import { EntryCollection } from "contentful";
 
 type Content = {
   slug: string;
@@ -21,6 +22,8 @@ type ContentId = {
   slug: string;
 };
 
+const client = buildClient();
+
 const Id: React.FC<Content> = ({ blog }) => {
   return (
     <div>
@@ -37,47 +40,32 @@ const Id: React.FC<Content> = ({ blog }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const data = await client.getEntries<ContentId>({
+const getPostEntries = async () => {
+  const { items }: EntryCollection<IPostFields> = await client.getEntries({
     content_type: "blog",
-    limit: 500,
   });
+  return items;
+};
 
-  const paths = data.items.map((item) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const items = await getPostEntries();
+  const paths = items.map((item) => {
     return {
       params: { slug: item.fields.slug },
     };
   });
-
   return {
     paths,
     fallback: false,
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  if (!params) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const slug = params.slug;
-
-  if (typeof slug !== "string") {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { items } = await client.getEntries({
-    content_type: "blog",
-    "fields.slug": params.slug,
-  });
-
+export const getStaticProps: GetStaticProps = async () => {
+  const items = await getPostEntries();
   return {
-    props: { blog: items[0] },
-    revalidate: 1,
+    props: {
+      posts: items,
+    },
   };
 };
 
