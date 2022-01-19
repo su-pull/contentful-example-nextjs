@@ -35,5 +35,3 @@ export const buildClient = () => {
 
   return client;
 };
-
-// export default client;
