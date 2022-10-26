@@ -3,7 +3,7 @@ import client from "../libs/contentful";
 import Link from "next/link";
 import React from "react";
 import { Entry } from "contentful";
-// import { IPostFields } from '../libs/types';
+import { IPostFields } from "libs/types";
 import { Key } from "react";
 import { format } from "date-fns";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -15,21 +15,7 @@ type IdProps = {
   total: number;
 };
 
-// cut your in libs folder
-interface IPostFields {
-  title: string;
-  slug: string;
-  date: string;
-  description: string;
-  body: Document;
-  fields: {
-    slug: string;
-    date: string;
-    title: string;
-    description: string;
-    body: Document;
-  };
-}
+// cut Types in libs folder.
 
 const MAX_ENTRY = 15;
 
