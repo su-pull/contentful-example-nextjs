@@ -56,6 +56,46 @@ const Id = ({ blog, total }: IdProps) => {
             </li>
           ))}
         </ul>
+        {/* <nav>
+          <ul className="ListNum">
+            <li>
+              <ActiveLink href={`/docs/${1}`} activeClassName="arrowState">
+                <a className="StartPage">≪</a>
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href={`/docs/${id === 1 ? 1 : id - 1}`} activeClassName="arrowState">
+                <a className="Rotate">
+                  <div className="arrow1" />
+                </a>
+              </ActiveLink>
+            </li>
+            <div>{id === 1 ? null : '...'}</div>
+            {range(
+              id === 1 ? id : id === countPage ? id - 2 : id - 1,
+              id === countPage ? countPage : id === 1 ? id + 2 : id + 1
+            ).map((id) => (
+              <li key={id}>
+                <ActiveLink href={`/docs/${id}`} activeClassName="listState">
+                  <a className="Pagi">{id}</a>
+                </ActiveLink>
+              </li>
+            ))}
+            <div>{id === countPage ? null : '...'}</div>
+            <li>
+              <ActiveLink href={`/docs/${id === countPage ? countPage : id + 1}`} activeClassName="arrowState">
+                <a className="Rotate">
+                  <div className="arrow2" />
+                </a>
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href={`/docs/${countPage}`} activeClassName="arrowState">
+                <a className="EndPage">≫</a>
+              </ActiveLink>
+            </li>
+          </ul>
+        </nav> */}
       </main>
     </div>
   );

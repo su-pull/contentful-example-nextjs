@@ -7,3 +7,88 @@ pre {
   font-size: 14px;
   font-weight: normal;
 }
+
+/* old */
+/* .ListNum {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.Pagi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-text);
+  font-weight: bold;
+  height: 26px;
+  width: 26px;
+}
+
+.Rotate {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  top: 0;
+}
+
+@mixin A2 {
+  position: relative;
+  display: flex;
+  top: 1px;
+  border-bottom: solid 2px var(--color-text);
+  width: 8px;
+  height: 8px;
+}
+
+.arrow1 {
+  @include A2;
+
+  left: 2px;
+  border-left: solid 2px var(--color-text);
+  transform: rotate(45deg);
+}
+
+.arrow2 {
+  @include A2;
+
+  left: -2px;
+  border-right: solid 2px var(--color-text);
+  transform: rotate(-45deg);
+}
+
+.arrowState {
+  .arrow1 {
+    border-left: solid 2px gray;
+    border-bottom: solid 2px gray;
+  }
+
+  .arrow2 {
+    border-right: solid 2px gray;
+    border-bottom: solid 2px gray;
+  }
+
+  color: gray;
+  pointer-events: none;
+}
+
+.EndPage {
+  position: relative;
+  top: 2px;
+}
+
+.StartPage {
+  position: relative;
+  top: 2px;
+}
+
+.listState {
+  background: rgb(61 81 107);
+  color: white;
+  border-radius: 50%;
+  pointer-events: none;
+} */
