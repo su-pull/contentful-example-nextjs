@@ -10,9 +10,7 @@ const Index = (): JSX.Element => {
       </Head>
       <main className="textLeft margin50p inblo">
         <h1>Hello Contentful!!</h1>
-        <Link href="/1">
-          <a>Next ...Dynamic routes</a>
-        </Link>
+        <Link href="/1">Next ...Dynamic routes</Link>
         <h2>
           your set .env.local of CONTENTFUL_DELIVERY_TOKEN and
           CONTENTFUL_SPACE_ID
