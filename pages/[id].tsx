@@ -1,7 +1,7 @@
 import Head from "next/head";
 import client from "../libs/contentful";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Entry } from "contentful";
 import { IPostFields } from "libs/types";
 import { Key } from "react";
@@ -22,6 +22,10 @@ const MAX_ENTRY = 15;
 const range = (start: number, end: number) =>
   [...Array(end - start + 1)].map((_, i) => start + i);
 const Id = ({ blog, total }: IdProps) => {
+  useEffect(() => {
+    fetch("/api/revalidate");
+  }, [blog]);
+
   return (
     <div>
       <Head>
@@ -34,15 +38,10 @@ const Id = ({ blog, total }: IdProps) => {
           {blog.map((props: Entry<IPostFields>, index: Key) => (
             <li key={index}>
               <Link href={`/test/${props.fields.slug}`}>
-                <a>
-                  <div>
-                    {format(
-                      new Date(props.fields.date),
-                      "MMMM eeee,do yyyy: a"
-                    )}
-                    :{props.fields.title}
-                  </div>
-                </a>
+                <div>
+                  {format(new Date(props.fields.date), "MMMM eeee,do yyyy: a")}:
+                  {props.fields.title}
+                </div>
               </Link>
             </li>
           ))}
@@ -50,9 +49,7 @@ const Id = ({ blog, total }: IdProps) => {
         <ul>
           {range(1, Math.ceil(total / MAX_ENTRY)).map((id) => (
             <li key={id}>
-              <Link href={`/${id}`}>
-                <a>{id}</a>
-              </Link>
+              <Link href={`/${id}`}>{id}</Link>
             </li>
           ))}
         </ul>
