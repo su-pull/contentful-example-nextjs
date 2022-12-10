@@ -1,6 +1,8 @@
 // import { EntryCollection } from 'contentful';
-import { Document } from "@contentful/rich-text-types";
+import { Document } from '@contentful/rich-text-types';
 export interface IPostFields {
+  map: StringConstructor;
+
   title: string;
   slug: string;
   date: string;

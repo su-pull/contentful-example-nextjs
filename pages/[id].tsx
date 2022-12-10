@@ -1,32 +1,41 @@
-import Head from "next/head";
-import client from "../libs/contentful";
-import Link from "next/link";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { Entry } from "contentful";
-import { IPostFields } from "libs/types";
-import { Key } from "react";
-import { format } from "date-fns";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { Pagination } from "@mui/material";
-import { useRouter } from "next/router";
+import Head from 'next/head';
+import client from '../libs/contentful';
+import Link from 'next/link';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Entry } from 'contentful';
+import { IPostFields } from 'libs/types';
+import { Key } from 'react';
+import { format } from 'date-fns';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { Pagination } from '@mui/material';
+import { useRouter } from 'next/router';
+import useSWR, { SWRConfig } from 'swr';
 
-type IdProps = {
-  blog: {
-    map: StringConstructor;
+type IdProps = Pick<typeId, 'id'> &
+  Pick<typeTotal, 'total'> & {
+    fallback: {
+      [key: string]: IPostFields;
+    };
   };
+
+type typeTotal = {
   total: number;
-  id: number;
 };
 
+type typeId = {
+  id: number;
+};
 // cut Types in libs folder.
 
 const MAX_ENTRY = 15;
 
-const range = (start: number, end: number) =>
-  [...Array(end - start + 1)].map((_, i) => start + i);
-const Id = ({ blog, total, id }: IdProps) => {
+const range = (start: number, end: number) => [...Array(end - start + 1)].map((_, i) => start + i);
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+const Article = ({ total, id }: IdProps) => {
+  const { data: blog } = useSWR<IPostFields>(`/api/${id}`, fetcher);
   useEffect(() => {
-    fetch("/api/revalidate");
+    fetch('/api/revalidate');
   }, [blog]);
 
   const [page, setPage] = useState(id);
@@ -47,12 +56,11 @@ const Id = ({ blog, total, id }: IdProps) => {
       <main>
         <h2>Articles</h2>
         <ul>
-          {blog.map((props: Entry<IPostFields>, index: Key) => (
+          {blog?.map((props: Entry<IPostFields>, index: Key) => (
             <li key={index}>
               <Link href={`/test/${props.fields.slug}`}>
                 <div>
-                  {format(new Date(props.fields.date), "MMMM eeee,do yyyy: a")}:
-                  {props.fields.title}
+                  {format(new Date(props.fields.date), 'MMMM eeee,do yyyy: a')}:{props.fields.title}
                 </div>
               </Link>
             </li>
@@ -67,10 +75,10 @@ const Id = ({ blog, total, id }: IdProps) => {
         </ul>
         <Pagination
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "20px 0 40px 0",
-            height: "50px",
+            display: 'flex',
+            justifyContent: 'center',
+            margin: '20px 0 40px 0',
+            height: '50px',
           }}
           // onMouseEnter={() => prefetch}
           onChange={handleChangePage}
@@ -128,32 +136,40 @@ const Id = ({ blog, total, id }: IdProps) => {
   );
 };
 
+const Id = ({ fallback, id, total }: IdProps) => {
+  return (
+    <SWRConfig value={{ fallback }}>
+      <Article fallback={fallback} id={id} total={total} />
+    </SWRConfig>
+  );
+};
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await client.getEntries<IPostFields>({
-    content_type: "blog",
-    order: "-fields.date",
+    content_type: 'blog',
+    order: '-fields.date',
   });
 
-  const paths = range(1, Math.ceil(data.total / MAX_ENTRY)).map(
-    (id) => `/${id}`
-  );
+  const paths = range(1, Math.ceil(data.total / MAX_ENTRY)).map((id) => `/${id}`);
 
-  return { paths, fallback: "blocking" };
+  return { paths, fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const id = Number(context.params?.id);
 
   const entries = await client.getEntries<IPostFields>({
-    content_type: "blog",
-    order: "-fields.date",
+    content_type: 'blog',
+    order: '-fields.date',
     limit: MAX_ENTRY,
     skip: (id - 1) * MAX_ENTRY,
   });
 
   return {
     props: {
-      blog: entries.items,
+      fallback: {
+        [`/api/${id}`]: entries.items,
+      },
       total: entries.total,
       id: id,
     },
