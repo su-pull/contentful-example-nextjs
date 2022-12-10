@@ -1,18 +1,21 @@
 import Head from "next/head";
 import client from "../libs/contentful";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Entry } from "contentful";
 import { IPostFields } from "libs/types";
 import { Key } from "react";
 import { format } from "date-fns";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { Pagination } from "@mui/material";
+import { useRouter } from "next/router";
 
 type IdProps = {
   blog: {
     map: StringConstructor;
   };
   total: number;
+  id: number;
 };
 
 // cut Types in libs folder.
@@ -21,10 +24,19 @@ const MAX_ENTRY = 15;
 
 const range = (start: number, end: number) =>
   [...Array(end - start + 1)].map((_, i) => start + i);
-const Id = ({ blog, total }: IdProps) => {
+const Id = ({ blog, total, id }: IdProps) => {
   useEffect(() => {
     fetch("/api/revalidate");
   }, [blog]);
+
+  const [page, setPage] = useState(id);
+  const router = useRouter();
+  const handleChangePage = (_: ChangeEvent<unknown>, page: number) => {
+    router.push(`/${page}`);
+    setPage(page);
+  };
+
+  const countPage = Math.ceil(total / MAX_ENTRY);
 
   return (
     <div>
@@ -53,6 +65,24 @@ const Id = ({ blog, total }: IdProps) => {
             </li>
           ))}
         </ul>
+        <Pagination
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            margin: "20px 0 40px 0",
+            height: "50px",
+          }}
+          // onMouseEnter={() => prefetch}
+          onChange={handleChangePage}
+          count={countPage}
+          page={page}
+          showFirstButton
+          showLastButton
+          variant="text"
+          color="standard"
+          shape="rounded"
+          tabIndex={0}
+        />
         {/* <nav>
           <ul className="ListNum">
             <li>
@@ -125,6 +155,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       blog: entries.items,
       total: entries.total,
+      id: id,
     },
   };
 };

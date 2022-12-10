@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.12.1",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.10.17",
     "@types/node": "^18.11.9",
     "@types/react-syntax-highlighter": "^13.5.2",
     "contentful": "^9.1.6",
