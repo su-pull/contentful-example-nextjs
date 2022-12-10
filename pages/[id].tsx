@@ -9,31 +9,21 @@ import { format } from 'date-fns';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
-import useSWR, { SWRConfig } from 'swr';
 
-type IdProps = Pick<typeId, 'id'> &
-  Pick<typeTotal, 'total'> & {
-    fallback: {
-      [key: string]: IPostFields;
-    };
+type IdProps = {
+  blog: {
+    map: StringConstructor;
   };
-
-type typeTotal = {
   total: number;
-};
-
-type typeId = {
   id: number;
 };
+
 // cut Types in libs folder.
 
 const MAX_ENTRY = 15;
 
 const range = (start: number, end: number) => [...Array(end - start + 1)].map((_, i) => start + i);
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-const Article = ({ total, id }: IdProps) => {
-  const { data: blog } = useSWR<IPostFields>(`/api/${id}`, fetcher);
+const Id = ({ blog, total, id }: IdProps) => {
   useEffect(() => {
     fetch('/api/revalidate');
   }, [blog]);
@@ -56,7 +46,7 @@ const Article = ({ total, id }: IdProps) => {
       <main>
         <h2>Articles</h2>
         <ul>
-          {blog?.map((props: Entry<IPostFields>, index: Key) => (
+          {blog.map((props: Entry<IPostFields>, index: Key) => (
             <li key={index}>
               <Link href={`/test/${props.fields.slug}`}>
                 <div>
@@ -136,14 +126,6 @@ const Article = ({ total, id }: IdProps) => {
   );
 };
 
-const Id = ({ fallback, id, total }: IdProps) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <Article fallback={fallback} id={id} total={total} />
-    </SWRConfig>
-  );
-};
-
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await client.getEntries<IPostFields>({
     content_type: 'blog',
@@ -167,9 +149,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-      fallback: {
-        [`/api/${id}`]: entries.items,
-      },
+      blog: entries.items,
       total: entries.total,
       id: id,
     },
