@@ -22,6 +22,10 @@ type SlugProps = {
   };
 };
 
+type Params = {
+  slug: string;
+};
+
 const Slug = ({ blog }: SlugProps) => {
   const options: Options = {
     renderNode: {
@@ -65,13 +69,13 @@ const Slug = ({ blog }: SlugProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const { items }: EntryCollection<IPostFields> = await client.getEntries({
     content_type: 'blog',
     limit: 1000,
   });
   const paths = items.map((item) => ({
-    params: { slug: item.fields.slug },
+    params: { slug: item.fields.slug as string },
   }));
   return {
     paths,
@@ -79,8 +83,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const slug = context.params?.slug;
+export const getStaticProps: GetStaticProps<SlugProps, Params> = async (context) => {
+  const slug = context.params?.slug as string;
 
   const entries = await client.getEntries<IPostFields>({
     content_type: 'blog',

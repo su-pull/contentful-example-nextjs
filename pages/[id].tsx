@@ -11,15 +11,9 @@ import { Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 
 type IdProps = {
-  blog: {
-    map: StringConstructor;
-  };
+  blog: Entry<IPostFields>[];
   total: number;
   id: number;
-};
-
-type IdStaticProps = {
-  blog: Entry<IPostFields>[];
 };
 
 type Params = {
@@ -143,7 +137,7 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   return { paths, fallback: 'blocking' };
 };
 
-export const getStaticProps: GetStaticProps<IdStaticProps, Params> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<IdProps, Params> = async ({ params }) => {
   const id = parseInt(params?.id as string, 10);
 
   const entries = await client.getEntries<IPostFields>({

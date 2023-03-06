@@ -1,5 +1,5 @@
-import Head from "next/head";
-import Link from "next/link";
+import Head from 'next/head';
+import Link from 'next/link';
 
 const Index = (): JSX.Element => {
   return (
@@ -11,10 +11,7 @@ const Index = (): JSX.Element => {
       <main className="textLeft margin50p inblo">
         <h1>Hello Contentful!!</h1>
         <Link href="/1">Next ...Dynamic routes</Link>
-        <h2>
-          your set .env.local of CONTENTFUL_DELIVERY_TOKEN and
-          CONTENTFUL_SPACE_ID
-        </h2>
+        <h2>your set .env.local of CONTENTFUL_DELIVERY_TOKEN and CONTENTFUL_SPACE_ID</h2>
         <p>going contentful blog life enjoy!</p>
       </main>
     </div>
