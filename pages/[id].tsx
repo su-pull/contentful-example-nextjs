@@ -18,11 +18,17 @@ type IdProps = {
   id: number;
 };
 
-// cut Types in libs folder.
+type IdStaticProps = {
+  blog: Entry<IPostFields>[];
+};
+
+type Params = {
+  id: string;
+};
 
 const MAX_ENTRY = 15;
 
-const range = (start: number, end: number) => [...Array(end - start + 1)].map((_, i) => start + i);
+const range = (start: number, end: number) => Array.from({ length: end - start + 1 }, (_, i) => start + i);
 const Id = ({ blog, total, id }: IdProps) => {
   useEffect(() => {
     fetch('/api/revalidate');
@@ -126,7 +132,7 @@ const Id = ({ blog, total, id }: IdProps) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const data = await client.getEntries<IPostFields>({
     content_type: 'blog',
     order: '-fields.date',
@@ -137,8 +143,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: 'blocking' };
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const id = Number(context.params?.id);
+export const getStaticProps: GetStaticProps<IdStaticProps, Params> = async ({ params }) => {
+  const id = parseInt(params?.id as string, 10);
 
   const entries = await client.getEntries<IPostFields>({
     content_type: 'blog',
