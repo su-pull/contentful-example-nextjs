@@ -1,6 +1,6 @@
 import client from '../../libs/contentful';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { EntryCollection } from 'contentful';
+import { Entry, EntryCollection } from 'contentful';
 import { IPostFields } from '../../libs/types';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { Document } from '@contentful/rich-text-types';
@@ -12,13 +12,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 type SlugProps = {
   blog: {
-    fields: {
-      slug: string;
-      date: string;
-      title: string;
-      description: string;
-      body: Document;
-    };
+    fields: IPostFields;
   };
 };
 
